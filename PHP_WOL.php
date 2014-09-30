@@ -53,36 +53,36 @@ class PHP_WOL {
 	
 		// Throw exception if extension is not loaded
 		if (!extension_loaded('sockets')) {
-			PHP_WOL::throwError("Error: The sockets extension is not loaded!");
+			self::throwError("Error: The sockets extension is not loaded!");
 		}
 		
 		$macHex = str_replace(array(':', '-'), NULL, $mac);
 		
 		// Throw exception if mac address is not valid
         	if (!ctype_xdigit($macHex)) {
-            		PHP_WOL::throwError('Error: Mac address is invalid!');
+            		self::throwError('Error: Mac address is invalid!');
         	}
 		
 		// Magic packet
-		$packet = str_repeat(chr(0xff), 6) . str_repeat(pack('H12', $macHex), 16);
+		$packet = str_repeat(chr(255), 6) . str_repeat(pack('H12', $macHex), 16);
 		
 		// Send to the broadcast address using UDP
-		PHP_WOL::$socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+		self::$socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		
-		if (is_resource(PHP_WOL::$socket)) {
+		if (is_resource(self::$socket)) {
 		
 			// Set socket option
-			if (!socket_set_option(PHP_WOL::$socket, 1, 6, TRUE)) {
-				PHP_WOL::throwError();
+			if (!socket_set_option(self::$socket, 1, 6, TRUE)) {
+				self::throwError();
 			}
 			
 			// Send magic packet
-			if (socket_sendto(PHP_WOL::$socket, $packet, strlen($packet), 0, $addr, $port) !== FALSE) {
-				socket_close(PHP_WOL::$socket);
+			if (socket_sendto(self::$socket, $packet, strlen($packet), 0, $addr, $port) !== FALSE) {
+				socket_close(self::$socket);
 				return TRUE;
 			}
 		}
-		PHP_WOL::throwError();
+		self::throwError();
 	}
 	
 	/** Throw Last Error
@@ -92,9 +92,9 @@ class PHP_WOL {
 	private static function throwError($msg = NULL) {
 		// Take last error if err msg is empty
 		if (empty($msg)) {
-			PHP_WOL::$errCode = socket_last_error(PHP_WOL::$socket);
-			PHP_WOL::$errMsg = socket_strerror(PHP_WOL::$errCode);
-			$msg = "Error (" . PHP_WOL::$errCode . "): " . PHP_WOL::$errMsg;
+			self::$errCode = socket_last_error(self::$socket);
+			self::$errMsg = socket_strerror(self::$errCode);
+			$msg = "Error (" . self::$errCode . "): " . self::$errMsg;
 		}
 		throw new Exception($msg);
 	}
