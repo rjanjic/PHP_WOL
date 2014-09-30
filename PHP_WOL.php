@@ -72,7 +72,7 @@ class PHP_WOL {
 		if (is_resource(self::$socket)) {
 		
 			// Set socket option
-			if (!socket_set_option(self::$socket, 1, 6, TRUE)) {
+			if (!socket_set_option(self::$socket, SOL_SOCKET, SO_BROADCAST, TRUE)) {
 				self::throwError();
 			}
 			
