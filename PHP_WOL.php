@@ -59,9 +59,9 @@ class PHP_WOL {
 		$macHex = str_replace(array(':', '-'), NULL, $mac);
 		
 		// Throw exception if mac address is not valid
-        if (!ctype_xdigit($macHex)) {
-            PHP_WOL::throwError('Error: Mac address is invalid!');
-        }
+        	if (!ctype_xdigit($macHex)) {
+            		PHP_WOL::throwError('Error: Mac address is invalid!');
+        	}
 		
 		// Magic packet
 		$packet = str_repeat(chr(0xff), 6) . str_repeat(pack('H12', $macHex), 16);
