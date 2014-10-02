@@ -59,7 +59,7 @@ class PHP_WOL {
 		$macHex = str_replace(array(':', '-'), NULL, $mac);
 		
 		// Throw exception if mac address is not valid
-		if (!ctype_xdigit($macHex)) {
+		if (!ctype_xdigit($macHex) || strlen($macHex) != 12) {
 			self::throwError('Error: Mac address is invalid!');
 		}
 		
