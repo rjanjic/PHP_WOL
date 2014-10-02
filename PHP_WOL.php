@@ -1,4 +1,4 @@
-<?php
+ <?php
 /******************************************************************
  * 
  * Projectname:   PHP_WOL - PHP Wake On Lan
@@ -50,10 +50,19 @@ class PHP_WOL {
 	 * @return	boolean
 	 */
 	public static function send($addr, $mac, $port = 9) {
-	
 		// Throw exception if extension is not loaded
 		if (!extension_loaded('sockets')) {
 			self::throwError("Error: The sockets extension is not loaded!");
+		}
+
+		// Check if $addr is valid IP, if not try to resolve host
+		if (!filter_var($addr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+			// Try to get the IPv4 address of a given host name
+			if (gethostbyname($addr) == $addr) {
+				self::throwError('Error: Domain name is unresolvable or IP address is invalid!');
+			} else {
+				$addr = gethostbyname($addr);
+			}
 		}
 		
 		$macHex = str_replace(array(':', '-'), NULL, $mac);
