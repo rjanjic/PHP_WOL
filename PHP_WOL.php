@@ -58,10 +58,11 @@ class PHP_WOL {
 		// Check if $addr is valid IP, if not try to resolve host
 		if (!filter_var($addr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 			// Try to get the IPv4 address of a given host name
-			if (gethostbyname($addr) == $addr) {
+			$originalAddr = gethostbyname($addr);
+			if ($originalAddr == $addr) {
 				self::throwError('Error: Domain name is unresolvable or IP address is invalid!');
 			} else {
-				$addr = gethostbyname($addr);
+				$addr = $originalAddr;
 			}
 		}
 		
